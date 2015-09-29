@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Theme Template for Bootstrap</title>
+    <title>SpeakApp</title>
 
     <!-- Bootstrap core CSS -->
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
@@ -32,7 +32,7 @@
     <nav id="menu-top" class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="row">
-          <a class="navbar-brand col-xs-6" href="./login.html">SpeakApp</a>
+          <a class="navbar-brand col-xs-6" href="./">SpeakApp</a>
           <a class="col-xs-6" id="add-button" href="./add.html">
              <span class="pull-right glyphicon glyphicon-plus" aria-hidden="true"></span>
           </a>          
@@ -132,6 +132,17 @@
                 txt = "No";
                 return false;
             }
+        });
+
+        $(".button.cancel").click(function(){
+            var r = confirm("Perderás los cambios realizados ¿Salir ahora?");
+            if (r == true) {
+                txt = "Si!";
+                window.location.href = "/";                
+            } else {
+                txt = "No";                
+            }
+            return false;
         });
            
     });  
