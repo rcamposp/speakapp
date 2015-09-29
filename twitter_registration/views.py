@@ -109,3 +109,12 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
     #return HttpResponse("logged out")
+
+def update_status(user, message):
+    try:
+        auth = tweepy.OAuthHandler('RYA6tJluBPa7INeicfFVyagLv', '6Lb3FEndR7gLgU1aZugPZotwPsAjyVh5dQ7OHJjE5atUR2hmPA')    
+        auth.set_access_token(user.access_token, user.access_token_secret)
+        api = tweepy.API(auth)
+        api.update_status(status=message)    
+    except:
+        return False;
