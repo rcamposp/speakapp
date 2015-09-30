@@ -4,9 +4,11 @@ import tweepy
 from .models import TwitterUser
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.conf import settings
+from twitter_registration.settings import *
 
 def twitterAuthenticate(request):
-    auth = tweepy.OAuthHandler('RYA6tJluBPa7INeicfFVyagLv', '6Lb3FEndR7gLgU1aZugPZotwPsAjyVh5dQ7OHJjE5atUR2hmPA', 'http://127.0.0.1:8000/register/callback')
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, CALLBACK_URL)
 
     try:
         redirect_url = auth.get_authorization_url()
@@ -20,7 +22,7 @@ def twitterAuthenticate(request):
 def twitterAuthorizeCallback(request):
     verifier = request.GET.get('oauth_verifier')
 
-    auth = tweepy.OAuthHandler('RYA6tJluBPa7INeicfFVyagLv', '6Lb3FEndR7gLgU1aZugPZotwPsAjyVh5dQ7OHJjE5atUR2hmPA')
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
     token = request.session.get('request_token')
     request.session.delete('request_token')
@@ -40,7 +42,7 @@ def twitterAuthorizeCallback(request):
     data = api.me()
     data = {'id' : data.id,
             'username' : data.screen_name,
-            'email' : data.screen_name + '@speakapp.com',
+            'email' : data.screen_name + '@'+TEMPORARY_EMAIL_DOMAIN,
             'name': data.name,
             'access_token' : auth.access_token,
             'access_token_secret' : auth.access_token_secret,}
@@ -70,7 +72,7 @@ def registerTwitter(data):
     newUser = TwitterUser()
     baseUser = User.objects.create_user(
             username = data["username"],
-            password = data["username"] + "salt",
+            password = data["username"] + PASSWORD_SALT,
             email = data["email"],            
             )
     newUser.user = baseUser
@@ -84,7 +86,7 @@ def registerTwitter(data):
 def user_login(request, twitteruser):
     # Use Django's machinery to attempt to see if the username/password
     # combination is valid - a User object is returned if it is.
-    user = authenticate(username=twitteruser.username, password=twitteruser.username+"salt")
+    user = authenticate(username=twitteruser.username, password=twitteruser.username + PASSWORD_SALT)
 
     # If we have a User object, the details are correct.
     # If None (Python's way of representing the absence of a value), no user
@@ -112,7 +114,7 @@ def user_logout(request):
 
 def update_status(user, message):
     try:
-        auth = tweepy.OAuthHandler('RYA6tJluBPa7INeicfFVyagLv', '6Lb3FEndR7gLgU1aZugPZotwPsAjyVh5dQ7OHJjE5atUR2hmPA')    
+        auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)    
         auth.set_access_token(user.access_token, user.access_token_secret)
         api = tweepy.API(auth)
         api.update_status(status=message)    
