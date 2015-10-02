@@ -19,8 +19,8 @@ class Location(models.Model):
 class Post(models.Model):
 	message 	= models.TextField(null=False, blank=False)
 	author 		= models.ForeignKey(User)
-	category 	= models.OneToOneField(Category, null=False, blank=False)
-	location 	= models.OneToOneField(Location, null=False, blank=False)	
+	category 	= models.ForeignKey(Category, null=False, blank=False)
+	location 	= models.ForeignKey(Location, null=False, blank=False)	
 	backers 	= models.ManyToManyField(User, related_name="backers",null=True, blank=True)
 	opposers 	= models.ManyToManyField(User, related_name="opposers", null=True, blank=True)
 	twitter_accounts = models.CharField(max_length=200)
