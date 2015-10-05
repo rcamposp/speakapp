@@ -13,13 +13,31 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='twitterUser',
+            name='Category',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
-                ('twitter_id', models.IntegerField()),
-                ('access_token', models.CharField(max_length=200)),
-                ('access_token_secret', models.CharField(max_length=200)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Location',
+            fields=[
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=200)),
+                ('parent', models.OneToOneField(null=True, to='speakapp.Location', blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Post',
+            fields=[
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('message', models.TextField()),
+                ('twitter_accounts', models.CharField(max_length=200)),
+                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('backers', models.ManyToManyField(related_name='backers', null=True, to=settings.AUTH_USER_MODEL, blank=True)),
+                ('category', models.ForeignKey(to='speakapp.Category')),
+                ('location', models.ForeignKey(to='speakapp.Location')),
+                ('opposers', models.ManyToManyField(related_name='opposers', null=True, to=settings.AUTH_USER_MODEL, blank=True)),
             ],
         ),
     ]

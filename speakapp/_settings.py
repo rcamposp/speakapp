@@ -115,3 +115,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+TWEET_SIGNATURE = ' #SpkApp'

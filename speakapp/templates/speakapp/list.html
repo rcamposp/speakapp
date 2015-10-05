@@ -63,10 +63,11 @@
             <form action="./agree" method="POST">
               {% csrf_token %}
               <input type="hidden" name="post_id" value="{{post.id}}">
-              <button class="agree">ACUERDO</button>
+              <button class="agree">APOYAR</button>
             </form>
-              <button class="disagree">DESACUERDO</button>
+              <!--<button class="disagree">DESACUERDO</button>-->                           
           </div>
+              
           
         </div>
       </div>

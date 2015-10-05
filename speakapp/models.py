@@ -23,7 +23,8 @@ class Post(models.Model):
 	location 	= models.ForeignKey(Location, null=False, blank=False)	
 	backers 	= models.ManyToManyField(User, related_name="backers",null=True, blank=True)
 	opposers 	= models.ManyToManyField(User, related_name="opposers", null=True, blank=True)
-	twitter_accounts = models.CharField(max_length=200)
+	twitter_accounts = models.CharField(max_length=200)	
 	
 	def __str__(self):
 		return self.message
+
