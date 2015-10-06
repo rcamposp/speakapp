@@ -1,3 +1,4 @@
+{% load post_extras %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,7 +64,12 @@
             <form action="./agree" method="POST">
               {% csrf_token %}
               <input type="hidden" name="post_id" value="{{post.id}}">
-              <button class="agree">APOYAR</button>
+              {% if not post.id|is_backer:current_user.id %}
+                <button class="agree">APOYAR</button>
+              {% else %}
+                <button class="agree" disabled>APOYAR</button>
+              {% endif %}
+
             </form>
               <!--<button class="disagree">DESACUERDO</button>-->                           
           </div>
