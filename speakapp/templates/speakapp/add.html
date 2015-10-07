@@ -105,6 +105,7 @@
     $(document).ready(function(){
         var data = [];
         var maxLength = {{post_max_length}};
+        length = maxLength;
         {% for location in locations %}
             data.push("{{location.name}}");
         {% endfor %}                 
@@ -118,8 +119,8 @@
         });
 
         $("#twitter-accounts").on('change keyup paste', function(){
-            maxLength -= $(this).val().length;
-            $("#max-length").html(maxLength);
+            length = maxLength - $(this).val().length - $("#text").val().length;
+            $("#max-length").html(length);
             $("#text").trigger("change");
         });
 
