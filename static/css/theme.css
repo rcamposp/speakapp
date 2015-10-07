@@ -3,7 +3,7 @@ body{
 }
 
 .main-container{
-	margin-top: 70px;
+	margin-top: 20px;
 }
 
 #login-body{
@@ -42,6 +42,7 @@ body{
 	background: #3B5998;
 	color: #fff;
 	border: 0;
+	position: relative;
 }
 
 #menu-top a{
@@ -76,6 +77,11 @@ body{
 	border: 0;
 }
 
+.topic .actions button.agree.disabled{	
+	background-color: #fff;
+	color: #3B5998;
+}
+
 .topic .actions form{
 	display: inline-block;
 }
@@ -108,4 +114,49 @@ textarea {
 	background-color: #3B5998;
 	color: #fff;
 	margin-left: 20px;
+}
+
+#sidr-button{
+    float: left;
+    display: block;
+    font-size: 25px;
+    line-height: 50px;
+    margin-right: 20px;
+}
+@media (max-width: 767px){
+	.navbar-brand{
+		padding-right: 0;
+	}
+}
+
+#sidr{
+	box-shadow: none;
+    background-color: #eee;
+}
+
+#sidr a{
+	box-shadow: none;
+}
+
+#sidr ul li{
+	border-bottom: 1px solid #ccc;
+    border-top: none;
+}
+
+#sidr ul li:hover{
+	border-top: none;
+	border-bottom: 1px solid #ccc;
+}
+
+.sidr-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    z-index: 100000;
+    background-color: #000;
+    opacity: 0.6;
 }
