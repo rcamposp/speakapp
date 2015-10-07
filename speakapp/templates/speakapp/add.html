@@ -74,7 +74,7 @@
              <div class="row">
                 <div class="col-xs-12">
                   <textarea id="text" name="message" placeholder="Escribe tu mensaje aquí"></textarea>
-                  <p id="text-counter"><span id="variable">0</span> / <span id="max-length">140</span></p>
+                  <p id="text-counter"><span id="variable">0</span> / <span id="max-length">{{post_max_length}}</span></p>
                 </div>
              </div>
              <div class="row">
@@ -104,7 +104,7 @@
     <script type="text/javascript">
     $(document).ready(function(){
         var data = [];
-        var maxLength = 140;
+        var maxLength = {{post_max_length}};
         {% for location in locations %}
             data.push("{{location.name}}");
         {% endfor %}                 
@@ -118,7 +118,7 @@
         });
 
         $("#twitter-accounts").on('change keyup paste', function(){
-            maxLength = 140 - $(this).val().length;
+            maxLength -= $(this).val().length;
             $("#max-length").html(maxLength);
             $("#text").trigger("change");
         });

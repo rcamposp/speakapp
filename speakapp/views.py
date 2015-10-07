@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.db.models import Count
 from .models import Post, Location, Category
+from speakapp.settings import *
 import twitter_registration.views
 import json
 
@@ -15,10 +16,15 @@ def index(request):
         return render(request, 'speakapp/index.html')
 
 def list(request):
-    current_user = request.user
+    current_user = request.user    
     if not (current_user.is_anonymous()):
-        posts = Post.objects.all().annotate(num_backers=Count('backers')).annotate(num_opposers=Count('opposers'))
-        return render(request, 'speakapp/list.html', {'posts':posts}) 
+        category_id = request.GET.get('category_id', False)
+        categories = Category.objects.all()
+        if category_id:            
+            posts = Post.objects.all().filter(category=category_id).annotate(num_backers=Count('backers')).annotate(num_opposers=Count('opposers')).order_by('-num_backers')[:15]
+        else:
+            posts = Post.objects.all().annotate(num_backers=Count('backers')).annotate(num_opposers=Count('opposers')).order_by('-num_backers')[:15]                
+        return render(request, 'speakapp/list.html', {'posts':posts, 'current_user' : current_user, 'categories': categories}) 
     else:
         return redirect('/')
     
@@ -28,19 +34,21 @@ def add(request):
         if request.method == 'GET':
             categories = Category.objects.all()
             locations = Location.objects.all()
-            data = {'categories' : categories, 'locations' : locations}
+            post_max_length = 140 - len(TWEET_SIGNATURE)
+            data = {'categories' : categories, 'locations' : locations, 'post_max_length' : post_max_length}
             return render(request, 'speakapp/add.html', data) 
         elif request.method == 'POST':
             post = Post(message = request.POST['message'], author = request.user, category = Category.objects.get(pk=request.POST['category_id']), location = Location.objects.get(name=request.POST['location']), twitter_accounts = request.POST['twitter_accounts'])
             post.save()
-            return render(request, 'speakapp/list.html')
+            return redirect('/list')            
     
 def agree(request):
     if request.user.is_authenticated():
         if request.method == 'POST':
             current_user = request.user
             post = Post.objects.get(pk=request.POST['post_id'])
-            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message)
+            post.backers.add(current_user)
+            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+TWEET_SIGNATURE)
     return redirect('/list')
 
 

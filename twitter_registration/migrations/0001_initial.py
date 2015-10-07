@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TwitterUser',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('twitter_id', models.IntegerField()),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('twitter_id', models.BigIntegerField()),
                 ('access_token', models.CharField(max_length=200)),
                 ('access_token_secret', models.CharField(max_length=200)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, related_name='twitter_user')),
             ],
         ),
     ]

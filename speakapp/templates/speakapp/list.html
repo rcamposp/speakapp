@@ -1,3 +1,4 @@
+{% load post_extras %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,12 +13,13 @@
     <title>SpeakApp</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
-    <link href="static/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="static/css/theme.css" rel="stylesheet">    
+    <link href="/static/css/theme.css" rel="stylesheet">    
+    <link href="/static/css/jquery.sidr.light.css" rel="stylesheet">        
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,15 +29,28 @@
   </head>
 
   <body role="document">
-
+    <div id="sidr">
+      <!-- Your content -->
+      <ul>
+        {% for category in categories %}
+          <li><a href="/list?category_id={{category.id}}">{{category.name}}</a></li>  
+        {% endfor %}              
+      </ul>
+    </div>
+    <div class="sidr-overlay" style="display: none;"></div>
     <!-- Fixed navbar -->
     <nav id="menu-top" class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
-        <div class="row">
-          <a class="navbar-brand col-xs-6" href="./">SpeakApp</a>
-          <a class="col-xs-6" id="add-button" href="./add.html">
-             <span class="pull-right glyphicon glyphicon-plus" aria-hidden="true"></span>
-          </a>          
+        <div class="row">          
+          <div class="col-xs-6">
+            <a href="#sidr" id="sidr-button"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span></a>
+            <a class="navbar-brand" href="./">SpeakApp</a>
+          </div>
+          <div class="col-xs-6">
+            <a id="add-button" class="pull-right" href="/add">
+               <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </a>          
+          </div>
         </div>
         
       </div>
@@ -44,33 +59,42 @@
     <div class="container main-container" role="main">
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
-      <div class="card">
+      <!--<div class="card">
         <h1>Welcome to SpeakApp!</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed dui porttitor nibh malesuada vestibulum. In venenatis felis a pharetra ultrices. Aenean ornare sed nunc sed vulputate. Duis imperdiet mollis tellus. Vestibulum scelerisque purus ut sapien accumsan, eu varius dui iaculis. Praesent sed ipsum rhoncus.</p>
-      </div>
+      </div>-->
+      {% if posts %}
+        {% for post in posts %}                                     
+        <div class="card">
+          <div class="topic">
+            <div class="category"><span class="glyphicon glyphicon-star"></span>{{post.category.name}}</div>
+            <div class="text">
+              {{post.message}}
+            </div>
+            <div class="info-icons">
+              <span class="glyphicon glyphicon-user"></span> {{post.num_backers}}
+            </div>
+            <div class="actions">
+              <form action="/agree" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{post.id}}">
+                {% if not post.id|is_backer:current_user.id %}
+                  <button class="agree">APOYAR</button>
+                {% else %}
+                  <button class="agree disabled" disabled>Ya apoyaste</button>
+                {% endif %}
 
-      {% for post in posts %}                                     
-      <div class="card">
-        <div class="topic">
-          <div class="category"><span class="glyphicon glyphicon-star"></span>{{post.category.name}}</div>
-          <div class="text">
-            {{post.message}}
+              </form>
+                <!--<button class="disagree">DESACUERDO</button>-->                           
+            </div>
+                
+            
           </div>
-          <div class="info-icons">
-            <span class="glyphicon glyphicon-user"></span> {{post.num_backers}}
-          </div>
-          <div class="actions">
-            <form action="./agree" method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="post_id" value="{{post.id}}">
-              <button class="agree">ACUERDO</button>
-            </form>
-              <button class="disagree">DESACUERDO</button>
-          </div>
-          
         </div>
-      </div>
-      {% endfor %}        
+        {% endfor %}    
+      {% else %}
+        <p id="empty">No se encontraron resultados!</p>
+      {% endif %}    
 
       <!--<div class="card">
         <div class="topic">
@@ -95,9 +119,12 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
-    <script src="static/js/docs.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/docs.min.js"></script>
+    <script src="/static/js/jquery.sidr.min.js"></script>     
+    <script src="/static/js/scripts.js"></script>     
+
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="static/js/ie10-viewport-bug-workaround.js"></script>    
+    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>        
   </body>
 </html>
