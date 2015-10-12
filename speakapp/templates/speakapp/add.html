@@ -49,31 +49,27 @@
           <h4>Nuevo tema</h4>
           <hr>
           <form id="add-post" method="POST" action="./add">
-          {% csrf_token %} 
+            {% csrf_token %} 
             <div class="row">
               <div class="col-xs-12">
-                <label for="twitter-accounts">Twitter de autoridades competentes</label>
-                <input id="twitter-accounts" type="text" name="twitter_accounts" class="form-control" placeholder="@blahblah @minrepcol">
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-xs-6">
-                <label for="location">Categoría</label>
-                 <select name="category_id" class="form-control">  
+                <span class="intro-text">Esta es mi opinión referente a </span>
+                <select id="category_id" name="category_id" class="form-control">  
+                  <option disabled selected>elige tema</option>
                  {% for category in categories %}
                     <option value="{{category.id}}">{{category.name}}</option>
                  {% endfor %}               
-                 </select>
-               </div>
-               <div class="col-xs-6">
-                  <label for="location">En</label>
-                  <input id="location" name="location" type="text" class="form-control typeahead" autocomplete="off" placeholder="ej: Bogotá, Antioquia">
-               </div>             
-             </div>
+                </select>
+                <span class="intro-text"> en </span>
+                <input id="location" type="text" class="form-control typeahead" autocomplete="off" placeholder="ej: Bogotá, Antioquia">
+                <input type="hidden" name="location_id" class="form-control">
+                <span class="intro-text"> dirigida a </span>
+                <input id="twitter-accounts" type="text" name="twitter_accounts" class="form-control" placeholder="@PoliciaColombia @InfoPresidencia">
+              </div>
+          </div>
              <div class="row">
                 <div class="col-xs-12">
-                  <textarea id="text" name="message" placeholder="Escribe tu mensaje aquí"></textarea>
+                  <p>Yo opino que</p>
+                  <textarea id="text" name="message" placeholder="Escribe una opinión con la que alguien pueda o no estar de acuerdo. Ej: El crecimiento social del país siempre debe estar por encima del crecimiento económico"></textarea>
                   <p id="text-counter"><span id="variable">0</span> / <span id="max-length">{{post_max_length}}</span></p>
                 </div>
              </div>
@@ -105,23 +101,43 @@
     $(document).ready(function(){
         var data = [];
         var maxLength = {{post_max_length}};
-        length = maxLength;
-        {% for location in locations %}
-            data.push("{{location.name}}");
-        {% endfor %}                 
-        $('#location').typeahead({source : data});
+        var locations = [];
+        var map = {};
+        length = maxLength;      
 
         $("#text").on('change keyup paste', function(){
-          if($(this).val().length >= maxLength){
-            $(this).val($(this).val().substring(0,maxLength));
+          if($(this).val().length >= length){
+            $(this).val($(this).val().substring(0,length));
           }
           $("#variable").html($(this).val().length);
         });
 
         $("#twitter-accounts").on('change keyup paste', function(){
-            length = maxLength - $(this).val().length - $("#text").val().length;
+            length = maxLength - $(this).val().length;
             $("#max-length").html(length);
             $("#text").trigger("change");
+        });
+
+
+        {% for location in locations %}
+            data.push({"name":"{{location.name}}", "id" : {{location.id}} });
+        {% endfor %}                 
+        $('#location').typeahead({
+          source : function(query, process){
+            locations = [];
+            map = {};
+         
+            $.each(data, function (i, location) {
+                map[location.name] = location;
+                locations.push(location.name);
+            });
+         
+            process(locations);
+          },
+          updater: function (item) {              
+              $('input[name=location_id]').val(map[item].id);
+              return item;
+          }
         });
 
         $(".button.ok").click(function(){

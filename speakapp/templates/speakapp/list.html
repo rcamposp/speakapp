@@ -35,6 +35,7 @@
         {% for category in categories %}
           <li><a href="/list?category_id={{category.id}}">{{category.name}}</a></li>  
         {% endfor %}              
+          <li id="logout"><a href="/register/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
       </ul>
     </div>
     <div class="sidr-overlay" style="display: none;"></div>
@@ -75,16 +76,23 @@
               <span class="glyphicon glyphicon-user"></span> {{post.num_backers}}
             </div>
             <div class="actions">
-              <form action="/agree" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="post_id" value="{{post.id}}">
-                {% if not post.id|is_backer:current_user.id %}
+              
+                {% if not post.id|is_backer:current_user.id and not post.id|is_opposer:current_user.id %}
+                <form action="/agree" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="post_id" value="{{post.id}}">
                   <button class="agree">APOYAR</button>
-                {% else %}
-                  <button class="agree disabled" disabled>Ya apoyaste</button>
-                {% endif %}
-
-              </form>
+                </form>
+                <form action="/disagree" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="post_id" value="{{post.id}}">
+                  <button class="disagree">NO APOYAR</button>
+                </form>
+                {% elif post.id|is_backer:current_user.id %}
+                  <button class="agree disabled" disabled>Apoyaste</button>
+                {% elif post.id|is_opposer:current_user.id %}
+                  <button class="agree disabled" disabled>No Apoyaste</button>
+                {% endif %}              
                 <!--<button class="disagree">DESACUERDO</button>-->                           
             </div>
                 
