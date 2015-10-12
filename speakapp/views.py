@@ -34,11 +34,11 @@ def add(request):
         if request.method == 'GET':
             categories = Category.objects.all()
             locations = Location.objects.all()
-            post_max_length = 140 - len(TWEET_SIGNATURE)
+            post_max_length = TWEET_MAX_LENGTH
             data = {'categories' : categories, 'locations' : locations, 'post_max_length' : post_max_length}
             return render(request, 'speakapp/add.html', data) 
         elif request.method == 'POST':
-            post = Post(message = request.POST['message'], author = request.user, category = Category.objects.get(pk=request.POST['category_id']), location = Location.objects.get(name=request.POST['location']), twitter_accounts = request.POST['twitter_accounts'])
+            post = Post(message = request.POST['message'], author = request.user, category = Category.objects.get(pk=request.POST['category_id']), location = Location.objects.get(pk=request.POST['location_id']), twitter_accounts = request.POST['twitter_accounts'])
             post.save()
             return redirect('/list')            
     
@@ -49,6 +49,16 @@ def agree(request):
             post = Post.objects.get(pk=request.POST['post_id'])
             post.backers.add(current_user)
             twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+TWEET_SIGNATURE)
+    return redirect('/list')
+
+
+def disagree(request):
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            current_user = request.user
+            post = Post.objects.get(pk=request.POST['post_id'])
+            post.opposers.add(current_user)        
+            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+' #NOapoyo '+TWEET_SIGNATURE)
     return redirect('/list')
 
 
