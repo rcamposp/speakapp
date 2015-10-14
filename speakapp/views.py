@@ -48,7 +48,7 @@ def agree(request):
             current_user = request.user
             post = Post.objects.get(pk=request.POST['post_id'])
             post.backers.add(current_user)
-            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+TWEET_SIGNATURE)
+            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+' #SIapoyo '+TWEET_SIGNATURE)
     return redirect('/list')
 
 
