@@ -63,6 +63,10 @@ body{
 	margin-top: 20px;
 }
 
+.topic .info-icons img{
+	width: 24px;	
+}
+
 .topic .actions{	
 	font-weight: bold;
 	margin-top: 20px;
