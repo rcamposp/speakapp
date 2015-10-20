@@ -21,9 +21,9 @@ def list(request):
         category_id = request.GET.get('category_id', False)
         categories = Category.objects.all()
         if category_id:            
-            posts = Post.objects.all().filter(category=category_id).annotate(num_backers=Count('backers', distinct=True)).annotate(num_opposers=Count('opposers'), distinct=True).order_by('-num_backers')[:15]
+            posts = Post.objects.all().filter(category=category_id).annotate(num_backers=Count('backers', distinct=True)).annotate(num_opposers=Count('opposers', distinct=True)).order_by('-num_backers')[:15]
         else:
-            posts = Post.objects.all().annotate(num_backers=Count('backers')).annotate(num_opposers=Count('opposers')).order_by('-num_backers')[:15]                
+            posts = Post.objects.all().annotate(num_backers=Count('backers', distinct=True)).annotate(num_opposers=Count('opposers', distinct=True)).order_by('-num_backers')[:15]                
         return render(request, 'speakapp/list.html', {'posts':posts, 'current_user' : current_user, 'categories': categories}) 
     else:
         return redirect('/')
