@@ -21,8 +21,9 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-	url(r'^$', views.index, name='index'), 
-    url(r'^list', views.list, name='list'),         
+    url(r'^$', views.index, name='index'), 
+    url(r'^list', views.list, name='list'),
+    url(r'^campaing/(?P<pk>[0-9]+)/$', views.PostDetailView.as_view(), name='detail'),
     url(r'^add', views.add, name='add'),
     url(r'^agree', views.agree, name='agree'),
     url(r'^disagree', views.disagree, name='disagree'),

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.conf import settings
 from twitter_registration.settings import *
+from django.core import serializers
 
 def twitterAuthenticate(request):
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, CALLBACK_URL)
@@ -39,10 +40,12 @@ def twitterAuthorizeCallback(request):
         
     
     api = tweepy.API(auth)
-    data = api.me()
+    #data = api.me()
+    data = api.verify_credentials(include_email = "true")
+
     data = {'id' : data.id,
             'username' : data.screen_name,
-            'email' : data.screen_name + '@'+TEMPORARY_EMAIL_DOMAIN,
+            'email' : data.email,
             'name': data.name,
             'access_token' : auth.access_token,
             'access_token_secret' : auth.access_token_secret,}

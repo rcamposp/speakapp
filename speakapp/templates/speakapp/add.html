@@ -46,30 +46,32 @@
    
       <div class="card">
         <div id="new-topic">
-          <h4>Nuevo tema</h4>
+          <h4>Nueva Campaña</h4>
           <hr>
           <form id="add-post" method="POST" action="./add">
             {% csrf_token %} 
             <div class="row">
               <div class="col-xs-12">
-                <span class="intro-text">Esta es mi opinión referente a </span>
-                <select id="category_id" name="category_id" class="form-control">  
-                  <option disabled selected>elige tema</option>
-                 {% for category in categories %}
-                    <option value="{{category.id}}">{{category.name}}</option>
-                 {% endfor %}               
-                </select>
-                <span class="intro-text"> en </span>
-                <input id="location" type="text" class="form-control typeahead" autocomplete="off" placeholder="ej: Bogotá, Antioquia">
-                <input type="hidden" name="location_id" class="form-control">
-                <span class="intro-text"> dirigida a </span>
-                <input id="twitter-accounts" type="text" name="twitter_accounts" class="form-control" placeholder="@PoliciaColombia @InfoPresidencia">
+                <div class="input">                  
+                  <select id="category_id" name="category_id" class="form-control">  
+                    <option disabled selected>Elige un tema: </option>
+                   {% for category in categories %}
+                      <option value="{{category.id}}">{{category.name}}</option>
+                   {% endfor %}               
+                  </select>
+                </div>
+                <div class="input">                  
+                  <input id="location" type="text" class="form-control typeahead" autocomplete="off" placeholder="Lugar: Bogotá, Antioquia">
+                  <input type="hidden" name="location_id" class="form-control">
+                </div>
+                <div class="input">                  
+                  <input id="twitter-accounts" type="text" name="twitter_accounts" class="form-control" placeholder="Hashtag: #Colombia #MedellinElige">
+                </div>
               </div>
           </div>
              <div class="row">
-                <div class="col-xs-12">
-                  <p>Yo opino que</p>
-                  <textarea id="text" name="message" placeholder="Escribe una opinión con la que alguien pueda o no estar de acuerdo. Ej: El crecimiento social del país siempre debe estar por encima del crecimiento económico"></textarea>
+                <div class="col-xs-12">                  
+                  <textarea id="text" name="message" placeholder="Escribe un texto que acompañe al Hashtag de la campaña y a partir del cual otros puedan apoyarte"></textarea>
                   <p id="text-counter"><span id="variable">0</span> / <span id="max-length">{{post_max_length}}</span></p>
                 </div>
              </div>
