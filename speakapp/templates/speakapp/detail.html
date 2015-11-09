@@ -75,9 +75,6 @@
               <div class="topic">
             {% endif %}           
             <div class="category"><span class="glyphicon glyphicon-star"></span>{{post.category.name}}</div>
-            <div class="hashtag">
-              <span>#</span>{{ post.twitter_accounts|clean_hashtag }}
-            </div>
             <div class="text">
               {{post.message}}
             </div>                      
@@ -95,7 +92,7 @@
                   <input type="hidden" name="post_id" value="{{post.id}}">
                   <button class="disagree">NO APOYAR</button>
                 </form>        
-                {% else %} 
+                {% elif not user_is_anonymous %} 
                 <div class="piechart-container row vertical-align">
                   <div class="backers count col-xs-4 "><span class="text">Apoya</span><span class="percentage">{{ post.num_backers|percentage_backers:post.num_opposers }}%</span></div>
                   <div class="col-xs-4 no-padding">
@@ -103,6 +100,8 @@
                   </div>
                   <div class="opposers count col-xs-4 "><span class="text">No Apoya</span><span class="percentage">{{ post.num_opposers|percentage_backers:post.num_backers }}%</span></div>
                 </div>
+                {% else %}
+                  <p>Registrate y apoya esta campaña ahora!</p>
                 {% endif %}                
             </div>
                 

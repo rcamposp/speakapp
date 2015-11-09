@@ -1,9 +1,12 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from .models import Post, Location, Category
 from speakapp.settings import *
+from django.views import generic
+from django.core.urlresolvers import reverse
+
 import twitter_registration.views
 import json
 
@@ -27,6 +30,8 @@ def list(request):
         return render(request, 'speakapp/list.html', {'posts':posts, 'current_user' : current_user, 'categories': categories}) 
     else:
         return redirect('/')
+
+
     
 
 def add(request):
@@ -38,8 +43,11 @@ def add(request):
             data = {'categories' : categories, 'locations' : locations, 'post_max_length' : post_max_length}
             return render(request, 'speakapp/add.html', data) 
         elif request.method == 'POST':
-            post = Post(message = request.POST['message'], author = request.user, category = Category.objects.get(pk=request.POST['category_id']), location = Location.objects.get(pk=request.POST['location_id']), twitter_accounts = request.POST['twitter_accounts'])
+            post = Post(message = request.POST['message'], author = request.user, category = Category.objects.get(pk=request.POST['category_id']), location = Location.objects.get(pk=request.POST['location_id']), twitter_accounts = request.POST['twitter_accounts'])            
             post.save()
+            post.backers.add(request.user)
+            post.save()
+            twitter_registration.views.update_status(request.user.twitter_user, post.twitter_accounts+' '+post.message+' http://' +request.get_host() +"/campaing/"+str(post.id))
             return redirect('/list')            
     
 def agree(request):
@@ -48,7 +56,7 @@ def agree(request):
             current_user = request.user
             post = Post.objects.get(pk=request.POST['post_id'])
             post.backers.add(current_user)
-            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+' #SIapoyo '+TWEET_SIGNATURE)
+            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+' http://' +request.get_host() +"/campaing/"+request.POST['post_id'])
     return redirect('/list')
 
 
@@ -58,7 +66,8 @@ def disagree(request):
             current_user = request.user
             post = Post.objects.get(pk=request.POST['post_id'])
             post.opposers.add(current_user)        
-            twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+' #NOapoyo '+TWEET_SIGNATURE)
+            #Don't send tweet
+            #twitter_registration.views.update_status(current_user.twitter_user, post.twitter_accounts+' '+post.message+' #NoApoyo '+TWEET_SIGNATURE)
     return redirect('/list')
 
 
@@ -69,3 +78,15 @@ def parseJson(request):
     for loc_data in data["locations"]:
         new_location = Location(name = loc_data)
         new_location.save()
+
+
+class PostDetailView(generic.DetailView):        
+    template_name = 'speakapp/detail.html'        
+    model = Post    
+
+    def get_context_data(self, **kwargs):        
+        context = super(PostDetailView, self).get_context_data(**kwargs)        
+        context['posts'] = Post.objects.all().filter(pk=self.kwargs.get("pk")).annotate(num_backers=Count('backers', distinct=True)).annotate(num_opposers=Count('opposers', distinct=True))
+        context['current_user'] = self.request.user         
+        context['user_is_anonymous'] = self.request.user.is_anonymous()
+        return context
