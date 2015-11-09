@@ -50,13 +50,23 @@ body{
 }
 
 .topic .category{
-	font-size: 15px;
-	font-weight: bold;
+	text-align: right;
+	font-size: 11px;
 }
 
 .topic .text{
 	font-size: 18px;
 	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.topic .hashtag{	
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.topic .hashtag span{	
+	font-size: 20px;
 }
 
 .topic .info-icons{
@@ -65,11 +75,6 @@ body{
 
 .topic .info-icons img{
 	width: 24px;	
-}
-
-.topic .actions{	
-	font-weight: bold;
-	margin-top: 20px;
 }
 
 .topic .actions button{
@@ -131,6 +136,9 @@ textarea {
 	.navbar-brand{
 		padding-right: 0;
 	}
+	#sidr-button{
+		margin-right: 0;
+	}
 }
 
 #sidr{
@@ -171,14 +179,18 @@ textarea {
 }
 
 .intro-text{
-	display: inline-block;
+	display: block;	
 	float: left;
 	line-height: 30px;
 }
 
+#add-post .input input, #add-post .input select{
+	width: 100%;
+}
+
 #add-post .form-control{
 	width: auto;
-	float: left;
+	
 	display: inline-block;
 	border: 0px;
     box-shadow: none !important;
@@ -188,16 +200,52 @@ textarea {
     height: 30px;    
 }
 
-#category_id{
-	width: 100px !important;
+
+
+.highcharts-container > svg > text:last-child{
+	visibility: hidden;
 }
 
-#location{
-	margin: 0 5px;
-    width: 140px !important;
-    
+.count {
+	text-align: center;
 }
 
-#twitter-accounts{
-    width: 240px !important;
+.count .text{
+	font-size: 14px;
+	display: block;
+}
+
+.count .percentage{
+	font-size: 25px;
+	display: block;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+.no-padding{
+	padding: 0;
+}
+
+.is-opposer .count.opposers{
+	color: #3B5998;
+}
+
+.is-opposer .count.backers{
+	color: #ccc;
+}
+
+.is-backer .count.backers{
+	color: #3B5998;	
+}
+
+.is-backer .count.opposers{
+	color: #ccc;
 }
